@@ -1,3 +1,26 @@
+
+# Руководство для Codex
+
+Данный репозиторий содержит мобильное приложение **GarantHUB Mobile** на базе React Native. Все изменения выполняются через Codex.
+
+## Общие указания
+
+1. Используйте существующую базу данных Supabase от проекта [GarantHUB](https://github.com/svarovsky7/GarantHUB).
+2. Бизнес-логика приложения должна опираться на реализацию из основного репозитория GarantHUB.
+3. Особое внимание уделяйте производительности и современному пользовательскому опыту.
+4. Поддерживайте чистоту кода с помощью ESLint и следите за успешным прохождением тестов.
+
+## Проверки перед коммитом
+
+Перед созданием коммита необходимо выполнить:
+
+```sh
+npm run lint
+npm test
+```
+
+Коммит считается готовым только при успешном прохождении обоих скриптов.
+
 Codex Agent Definition for GarantHUB Mobile
 
 Role
@@ -153,4 +176,5 @@ i18n is inherited from the web project; keys and translations live in shared/lib
 
 All domain rules and validations come from the web project GarantHUB (entities/, features/).
 Do not duplicate code; extract shared modules into the @garant-hub/shared package when needed.
+
 

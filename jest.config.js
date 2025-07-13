@@ -4,6 +4,6 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/$1',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|@react-navigation)/)',
+    'node_modules/(?!(react-native|@react-native|@react-navigation|@supabase|isomorphic-ws|isows)/)',
   ],
 };

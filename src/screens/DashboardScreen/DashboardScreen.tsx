@@ -1,8 +1,9 @@
 import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
-import { List, WhiteSpace, WingBlank, Card, ActivityIndicator } from '@ant-design/react-native';
+import { Card, ActivityIndicator, List } from 'react-native-paper';
+import { WhiteSpace, WingBlank } from '../../shared/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../app/navigation';
-import { useLayoutEffect, useEffect, useState } from 'react';
+import { useLayoutEffect, useEffect, useState, useCallback } from 'react';
 import { AuthService } from '../../services/authService';
 import { DataService } from '../../services/dataService';
 import type { Profile } from '../../types/database';
@@ -14,7 +15,7 @@ export function DashboardScreen({ navigation }: Props) {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await AuthService.signOut();
       navigation.navigate('Login');
@@ -22,7 +23,7 @@ export function DashboardScreen({ navigation }: Props) {
       console.error('Logout error:', error);
       navigation.navigate('Login');
     }
-  };
+  }, [navigation]);
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -61,7 +62,7 @@ export function DashboardScreen({ navigation }: Props) {
         </TouchableOpacity>
       ),
     });
-  }, [navigation]);
+  }, [navigation, handleLogout]);
 
   return (
     <ScrollView style={styles.container}>
@@ -90,55 +91,53 @@ export function DashboardScreen({ navigation }: Props) {
           </View>
         ) : (
           <>
-            <List renderHeader="Статистика пользователя">
-              <List.Item 
-                extra={<Text style={styles.statNumber}>{stats?.claims?.total || 0}</Text>}
-                arrow="horizontal"
-              >
-                Всего замечаний
-              </List.Item>
-              <List.Item 
-                extra={<Text style={[styles.statNumber, styles.activeCount]}>{stats?.claims?.active || 0}</Text>}
-                arrow="horizontal"
-              >
-                Активные замечания
-              </List.Item>
-              <List.Item 
-                extra={<Text style={[styles.statNumber, styles.completedCount]}>{stats?.claims?.completed || 0}</Text>}
-                arrow="horizontal"
-              >
-                Закрытые замечания
-              </List.Item>
-            </List>
+            <List.Section>
+              <List.Subheader>Статистика пользователя</List.Subheader>
+              <List.Item
+                title="Всего замечаний"
+                right={() => <Text style={styles.statNumber}>{stats?.claims?.total || 0}</Text>}
+              />
+              <List.Item
+                title="Активные замечания"
+                right={() => (
+                  <Text style={[styles.statNumber, styles.activeCount]}>{stats?.claims?.active || 0}</Text>
+                )}
+              />
+              <List.Item
+                title="Закрытые замечания"
+                right={() => (
+                  <Text style={[styles.statNumber, styles.completedCount]}>{stats?.claims?.completed || 0}</Text>
+                )}
+              />
+            </List.Section>
 
             <WhiteSpace size="lg" />
 
-            <List renderHeader="Дефекты">
-              <List.Item 
-                extra={<Text style={styles.statNumber}>{stats?.defects?.total || 0}</Text>}
-                arrow="horizontal"
-              >
-                Всего дефектов
-              </List.Item>
-              <List.Item 
-                extra={<Text style={[styles.statNumber, styles.criticalCount]}>{stats?.defects?.critical || 0}</Text>}
-                arrow="horizontal"
-              >
-                Критические
-              </List.Item>
-              <List.Item 
-                extra={<Text style={[styles.statNumber, styles.inProgressCount]}>{stats?.defects?.inProgress || 0}</Text>}
-                arrow="horizontal"
-              >
-                В работе
-              </List.Item>
-              <List.Item 
-                extra={<Text style={[styles.statNumber, styles.completedCount]}>{stats?.defects?.completed || 0}</Text>}
-                arrow="horizontal"
-              >
-                Исправленные
-              </List.Item>
-            </List>
+            <List.Section>
+              <List.Subheader>Дефекты</List.Subheader>
+              <List.Item
+                title="Всего дефектов"
+                right={() => <Text style={styles.statNumber}>{stats?.defects?.total || 0}</Text>}
+              />
+              <List.Item
+                title="Критические"
+                right={() => (
+                  <Text style={[styles.statNumber, styles.criticalCount]}>{stats?.defects?.critical || 0}</Text>
+                )}
+              />
+              <List.Item
+                title="В работе"
+                right={() => (
+                  <Text style={[styles.statNumber, styles.inProgressCount]}>{stats?.defects?.inProgress || 0}</Text>
+                )}
+              />
+              <List.Item
+                title="Исправленные"
+                right={() => (
+                  <Text style={[styles.statNumber, styles.completedCount]}>{stats?.defects?.completed || 0}</Text>
+                )}
+              />
+            </List.Section>
           </>
         )}
 

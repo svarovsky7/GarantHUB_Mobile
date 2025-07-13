@@ -1,10 +1,10 @@
-import { Provider } from '@ant-design/react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
 import { AppNavigator } from './app/navigation';
 
 export default function App() {
   return (
-    <Provider>
+    <PaperProvider>
       <AppNavigator />
-    </Provider>
+    </PaperProvider>
   );
 }

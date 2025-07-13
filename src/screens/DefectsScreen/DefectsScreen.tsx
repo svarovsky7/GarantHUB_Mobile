@@ -1,5 +1,6 @@
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
-import { List, WhiteSpace, WingBlank, Card, ActivityIndicator } from '@ant-design/react-native';
+import { Card, ActivityIndicator, List } from 'react-native-paper';
+import { WhiteSpace, WingBlank } from '../../shared/ui';
 import { useEffect, useState } from 'react';
 import { AuthService } from '../../services/authService';
 import { DataService } from '../../services/dataService';
@@ -47,52 +48,49 @@ export function DefectsScreen() {
             <Text style={styles.loadingText}>Загрузка дефектов...</Text>
           </View>
         ) : (
-          <List renderHeader="Мои дефекты">
+          <List.Section>
+            <List.Subheader>Мои дефекты</List.Subheader>
             {defects.length === 0 ? (
               <View style={styles.emptyContainer}>
                 <Text style={styles.emptyText}>У вас пока нет дефектов</Text>
               </View>
             ) : (
               defects.map((defect, index) => (
-                <List.Item 
+                <List.Item
                   key={defect.id || index}
-                  extra={
-                    <Text 
+                  title={() => (
+                    <View>
+                      <Text style={styles.defectTitle}>{defect.description || 'Нет описания'}</Text>
+                      {defect.unit_name && (
+                        <Text style={styles.defectUnit}>
+                          {defect.unit_name} {defect.unit_building && `(${defect.unit_building})`}
+                        </Text>
+                      )}
+                      <Text style={styles.defectDate}>{formatDate(defect.created_at)}</Text>
+                    </View>
+                  )}
+                  right={() => (
+                    <Text
                       style={[
-                        styles.statusBadge, 
+                        styles.statusBadge,
                         { backgroundColor: `${getStatusColor(defect.status_color)}20`, color: getStatusColor(defect.status_color) }
                       ]}
                     >
                       {defect.status_name || 'Неизвестно'}
                     </Text>
-                  }
-                  arrow="horizontal"
-                >
-                  <View>
-                    <Text style={styles.defectTitle}>
-                      {defect.description || 'Нет описания'}
-                    </Text>
-                    {defect.unit_name && (
-                      <Text style={styles.defectUnit}>
-                        {defect.unit_name} {defect.unit_building && `(${defect.unit_building})`}
-                      </Text>
-                    )}
-                    <Text style={styles.defectDate}>
-                      {formatDate(defect.created_at)}
-                    </Text>
-                  </View>
-                </List.Item>
+                  )}
+                />
               ))
             )}
-          </List>
+          </List.Section>
         )}
 
         <WhiteSpace size="lg" />
 
-{!loading && (
+        {!loading && (
           <Card>
-            <Card.Header title="Статистика дефектов" />
-            <Card.Body>
+            <Card.Title title="Статистика дефектов" />
+            <Card.Content>
               <View style={styles.statsGrid}>
                 <View style={styles.statItem}>
                   <Text style={styles.statNumber}>{defects.length}</Text>
@@ -117,7 +115,7 @@ export function DefectsScreen() {
                   <Text style={styles.statLabel}>Исправлены</Text>
                 </View>
               </View>
-            </Card.Body>
+            </Card.Content>
           </Card>
         )}
 

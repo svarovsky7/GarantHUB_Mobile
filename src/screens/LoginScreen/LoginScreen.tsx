@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { View, StyleSheet, ScrollView, Image, Text, Platform, Alert } from 'react-native';
-import { List, WhiteSpace, WingBlank, Toast, ActivityIndicator } from '@ant-design/react-native';
-import { Button, TextInput } from '../../shared/ui';
+import { View, StyleSheet, ScrollView, Text, Platform, Alert } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
+import { Button, TextInput, WhiteSpace, WingBlank } from '../../shared/ui';
 import { AuthService } from '../../services/authService';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../app/navigation';
@@ -16,11 +16,7 @@ export function LoginScreen({ navigation }: Props) {
   const handleLogin = useCallback(async () => {
     if (!email || !password) {
       const message = 'Заполните все поля';
-      if (Platform.OS === 'web') {
-        Alert.alert('Ошибка', message);
-      } else {
-        Toast.fail(message, 1);
-      }
+      Alert.alert('Ошибка', message);
       return;
     }
     
@@ -28,19 +24,11 @@ export function LoginScreen({ navigation }: Props) {
     try {
       await AuthService.signIn(email, password);
       const successMessage = 'Вход выполнен';
-      if (Platform.OS === 'web') {
-        Alert.alert('Успех', successMessage);
-      } else {
-        Toast.success(successMessage, 1);
-      }
+      Alert.alert('Успех', successMessage);
       navigation.navigate('MainTabs');
     } catch (error: any) {
       const errorMessage = error.message || 'Ошибка входа';
-      if (Platform.OS === 'web') {
-        Alert.alert('Ошибка', errorMessage);
-      } else {
-        Toast.fail(errorMessage, 2);
-      }
+      Alert.alert('Ошибка', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -101,14 +89,13 @@ export function LoginScreen({ navigation }: Props) {
             />
           </View>
         ) : (
-          <List renderHeader={'Вход в систему'}>
+          <View>
+            <Text style={styles.formHeader}>Вход в систему</Text>
             <TextInput
               value={email}
               onChange={(value) => setEmail(value || '')}
               label="Email"
               placeholder="Введите email"
-              type="email-address"
-              clear
             />
             <TextInput
               value={password}
@@ -116,9 +103,8 @@ export function LoginScreen({ navigation }: Props) {
               label="Пароль"
               placeholder="Введите пароль"
               secureTextEntry
-              clear
             />
-          </List>
+          </View>
         )}
 
         <WhiteSpace size="xl" />

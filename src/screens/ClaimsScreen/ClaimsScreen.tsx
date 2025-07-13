@@ -1,5 +1,6 @@
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
-import { List, WhiteSpace, WingBlank, Card, ActivityIndicator } from '@ant-design/react-native';
+import { Card, ActivityIndicator, List } from 'react-native-paper';
+import { WhiteSpace, WingBlank } from '../../shared/ui';
 import { useEffect, useState } from 'react';
 import { AuthService } from '../../services/authService';
 import { DataService } from '../../services/dataService';
@@ -47,50 +48,45 @@ export function ClaimsScreen() {
             <Text style={styles.loadingText}>Загрузка претензий...</Text>
           </View>
         ) : (
-          <List renderHeader="Мои претензии">
+          <List.Section>
+            <List.Subheader>Мои претензии</List.Subheader>
             {claims.length === 0 ? (
               <View style={styles.emptyContainer}>
                 <Text style={styles.emptyText}>У вас пока нет претензий</Text>
               </View>
             ) : (
               claims.map((claim, index) => (
-                <List.Item 
+                <List.Item
                   key={claim.id || index}
-                  extra={
-                    <Text 
+                  title={() => (
+                    <View>
+                      <Text style={styles.claimTitle}>{claim.claim_no ? `Претензия №${claim.claim_no}` : 'Без номера'}</Text>
+                      <Text style={styles.claimDescription} numberOfLines={2}>{claim.description || 'Нет описания'}</Text>
+                      <Text style={styles.claimDate}>{formatDate(claim.created_at)}</Text>
+                    </View>
+                  )}
+                  right={() => (
+                    <Text
                       style={[
-                        styles.statusBadge, 
+                        styles.statusBadge,
                         { backgroundColor: `${getStatusColor(claim.status_color)}20`, color: getStatusColor(claim.status_color) }
                       ]}
                     >
                       {claim.status_name || 'Неизвестно'}
                     </Text>
-                  }
-                  arrow="horizontal"
-                >
-                  <View>
-                    <Text style={styles.claimTitle}>
-                      {claim.claim_no ? `Претензия №${claim.claim_no}` : 'Без номера'}
-                    </Text>
-                    <Text style={styles.claimDescription} numberOfLines={2}>
-                      {claim.description || 'Нет описания'}
-                    </Text>
-                    <Text style={styles.claimDate}>
-                      {formatDate(claim.created_at)}
-                    </Text>
-                  </View>
-                </List.Item>
+                  )}
+                />
               ))
             )}
-          </List>
+          </List.Section>
         )}
 
         <WhiteSpace size="lg" />
 
 {!loading && (
           <Card>
-            <Card.Header title="Статистика претензий" />
-            <Card.Body>
+            <Card.Title title="Статистика претензий" />
+            <Card.Content>
               <View style={styles.statsRow}>
                 <View style={styles.statItem}>
                   <Text style={styles.statNumber}>{claims.length}</Text>
@@ -109,7 +105,7 @@ export function ClaimsScreen() {
                   <Text style={styles.statLabel}>Закрытые</Text>
                 </View>
               </View>
-            </Card.Body>
+            </Card.Content>
           </Card>
         )}
 

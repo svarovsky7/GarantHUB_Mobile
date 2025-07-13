@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { List, WhiteSpace, WingBlank, Toast, Picker } from '@ant-design/react-native';
-import { Button, TextInput } from '../../shared/ui';
+import { View, StyleSheet, ScrollView, Alert, Text } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { Button, TextInput, WhiteSpace, WingBlank } from '../../shared/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../app/navigation';
 
@@ -22,12 +22,12 @@ export function RegisterEmployeeScreen({ navigation }: Props) {
 
   const handleCreate = useCallback(() => {
     if (!email || !password || !selectedRole[0]) {
-      Toast.fail('Заполните обязательные поля', 1);
+      Alert.alert('Ошибка', 'Заполните обязательные поля');
       return;
     }
 
     // TODO: реализация создания сотрудника через Supabase
-    Toast.success('Сотрудник создан', 1);
+    Alert.alert('Успех', 'Сотрудник создан');
     navigation.goBack();
   }, [email, password, selectedRole, navigation]);
 
@@ -39,14 +39,13 @@ export function RegisterEmployeeScreen({ navigation }: Props) {
       <WingBlank>
         <WhiteSpace size="lg" />
         
-        <List renderHeader={'Основная информация'}>
+        <View>
+          <Text style={styles.sectionHeader}>Основная информация</Text>
           <TextInput
             value={email}
             onChange={(value) => setEmail(value || '')}
             label="Email"
             placeholder="Введите email сотрудника"
-            type="email-address"
-            clear
           />
           <TextInput
             value={password}
@@ -54,29 +53,28 @@ export function RegisterEmployeeScreen({ navigation }: Props) {
             label="Пароль"
             placeholder="Введите пароль"
             secureTextEntry
-            clear
           />
-        </List>
+        </View>
 
         <WhiteSpace size="lg" />
 
-        <List renderHeader={'Роль и доступы'}>
+        <View>
+          <Text style={styles.sectionHeader}>Роль и доступы</Text>
           <Picker
-            data={roles}
-            value={selectedRole}
-            cols={1}
-            onChange={(value) => setSelectedRole(value as string[])}
+            selectedValue={selectedRole[0]}
+            onValueChange={(value) => setSelectedRole([value])}
           >
-            <List.Item arrow="horizontal">Роль</List.Item>
+            {roles.map((r) => (
+              <Picker.Item key={r.value} label={r.label} value={r.value} />
+            ))}
           </Picker>
           <TextInput
             value={projects}
             onChange={(value) => setProjects(value || '')}
             label="Проекты"
             placeholder="Введите проекты через запятую"
-            clear
           />
-        </List>
+        </View>
 
         <WhiteSpace size="xl" />
 
@@ -107,5 +105,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f9',
+  },
+  sectionHeader: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#333',
   },
 });

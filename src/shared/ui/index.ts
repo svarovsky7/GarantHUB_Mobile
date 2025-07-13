@@ -1,2 +1,3 @@
-export { Button } from './AntButton';
-export { TextInput } from './AntTextInput';
+export { Button } from './Button';
+export { TextInput, TextInputIcon } from './TextInput';
+export { WhiteSpace, WingBlank } from './Spacing';

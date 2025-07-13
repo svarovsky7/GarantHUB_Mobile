@@ -2,10 +2,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LoginScreen } from '../../screens/LoginScreen';
 import { RegisterEmployeeScreen } from '../../screens/RegisterEmployeeScreen';
+import { TabNavigator } from './TabNavigator';
 
 export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
+  MainTabs: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,6 +39,13 @@ export function AppNavigator() {
           options={{ 
             title: 'Регистрация сотрудника',
             headerBackTitle: 'Назад',
+          }} 
+        />
+        <Stack.Screen 
+          name="MainTabs" 
+          component={TabNavigator} 
+          options={{ 
+            headerShown: false,
           }} 
         />
       </Stack.Navigator>

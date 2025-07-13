@@ -9,6 +9,7 @@ const path = require('path');
  */
 const config = {
   resolver: {
+    platforms: ['ios', 'android', 'native'],
     resolveRequest: (context, moduleName, platform) => {
       if (moduleName.startsWith('@/')) {
         const resolvedPath = path.resolve(__dirname, 'src', moduleName.substring(2));

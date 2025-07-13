@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
-import { View, StyleSheet, ScrollView, Image, Text } from 'react-native';
+import { View, StyleSheet, ScrollView, Image, Text, Platform, Alert } from 'react-native';
 import { List, WhiteSpace, WingBlank, Toast, ActivityIndicator } from '@ant-design/react-native';
 import { Button, TextInput } from '../../shared/ui';
+import { AuthService } from '../../services/authService';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../app/navigation';
 
@@ -14,17 +15,36 @@ export function LoginScreen({ navigation }: Props) {
 
   const handleLogin = useCallback(async () => {
     if (!email || !password) {
-      Toast.fail('Заполните все поля', 1);
+      const message = 'Заполните все поля';
+      if (Platform.OS === 'web') {
+        Alert.alert('Ошибка', message);
+      } else {
+        Toast.fail(message, 1);
+      }
       return;
     }
     
     setLoading(true);
-    // TODO: реализация авторизации через Supabase
-    setTimeout(() => {
+    try {
+      await AuthService.signIn(email, password);
+      const successMessage = 'Вход выполнен';
+      if (Platform.OS === 'web') {
+        Alert.alert('Успех', successMessage);
+      } else {
+        Toast.success(successMessage, 1);
+      }
+      navigation.navigate('MainTabs');
+    } catch (error: any) {
+      const errorMessage = error.message || 'Ошибка входа';
+      if (Platform.OS === 'web') {
+        Alert.alert('Ошибка', errorMessage);
+      } else {
+        Toast.fail(errorMessage, 2);
+      }
+    } finally {
       setLoading(false);
-      Toast.success('Вход выполнен', 1);
-    }, 1000);
-  }, [email, password]);
+    }
+  }, [email, password, navigation]);
 
   const handleRegisterNavigate = useCallback(() => {
     navigation.navigate('Register');
@@ -60,24 +80,46 @@ export function LoginScreen({ navigation }: Props) {
 
         <WhiteSpace size="xl" />
 
-        <List renderHeader={'Вход в систему'}>
-          <TextInput
-            value={email}
-            onChange={(value) => setEmail(value || '')}
-            label="Email"
-            placeholder="Введите email"
-            type="email-address"
-            clear
-          />
-          <TextInput
-            value={password}
-            onChange={(value) => setPassword(value || '')}
-            label="Пароль"
-            placeholder="Введите пароль"
-            secureTextEntry
-            clear
-          />
-        </List>
+        {Platform.OS === 'web' ? (
+          <View style={styles.webForm}>
+            <Text style={styles.formHeader}>Вход в систему</Text>
+            <TextInput
+              value={email}
+              onChange={(value) => setEmail(value || '')}
+              label="Email"
+              placeholder="Введите email"
+              type="email-address"
+              clear
+            />
+            <TextInput
+              value={password}
+              onChange={(value) => setPassword(value || '')}
+              label="Пароль"
+              placeholder="Введите пароль"
+              secureTextEntry
+              clear
+            />
+          </View>
+        ) : (
+          <List renderHeader={'Вход в систему'}>
+            <TextInput
+              value={email}
+              onChange={(value) => setEmail(value || '')}
+              label="Email"
+              placeholder="Введите email"
+              type="email-address"
+              clear
+            />
+            <TextInput
+              value={password}
+              onChange={(value) => setPassword(value || '')}
+              label="Пароль"
+              placeholder="Введите пароль"
+              secureTextEntry
+              clear
+            />
+          </List>
+        )}
 
         <WhiteSpace size="xl" />
 
@@ -101,7 +143,7 @@ export function LoginScreen({ navigation }: Props) {
         <WhiteSpace size="xl" />
         
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2024 GarantHUB</Text>
+          <Text style={styles.footerText}>© 2025 GarantHUB</Text>
         </View>
       </WingBlank>
     </ScrollView>
@@ -161,5 +203,17 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 14,
     color: '#999',
+  },
+  webForm: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 16,
+    marginVertical: 8,
+  },
+  formHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#333',
   },
 });

@@ -9,7 +9,15 @@
       "Bash(./gradlew:*)",
       "Bash(mkdir:*)",
       "Bash(mv:*)",
-      "Bash(rmdir:*)"
+      "Bash(rmdir:*)",
+      "Bash(ls:*)",
+      "Bash(npx install-expo-modules:*)",
+      "Bash(cp:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(rm:*)",
+      "Bash(npx webpack serve:*)",
+      "Bash(pkill:*)",
+      "Bash(true)"
     ],
     "deny": []
   }
